@@ -1,17 +1,63 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import SeasonDisplay from './SeasonDisplay'
+
+class App extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            season: null
+        }
+    }
+    render() {
+        window.navigator.geolocation.getCurrentPosition(
+            (position) => checkSeason(position),
+            (err) => console.log(err)
+            
+        );
+    
+        let checkSeason = (position) => {
+            console.log(position.coords.latitude)
+            let latitude = position.coords.latitude
+            let today = new Date()
+            let month = today.getMonth() + 1
+            let season
+            if(latitude > 0){
+                if (month > 3 && month < 10) {
+                    setSeason('summer')
+                } else {
+                    setSeason('winter')
+                }
+            } else {
+                if (month > 3 && month < 10) {
+                    setSeason('winter')
+                } else {
+                    setSeason('summer')
+                }
+            }
+            return season
+        }
+
+        let setSeason = (season) => {
+            this.setState({
+                season: season
+            })
+            console.log(this.state)
+        }
+
+    
+        return (
+            <div>
+                <h1>Hello</h1>
+                <SeasonDisplay season={this.state.season} />
+            </div>
+
+        )
+    }
+    
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+    <App/>,
+    document.querySelector('#root')
+)
