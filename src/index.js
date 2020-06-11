@@ -6,13 +6,16 @@ class App extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            season: null
+            season: null,
+            error: null
         }
     }
     render() {
         window.navigator.geolocation.getCurrentPosition(
             (position) => checkSeason(position),
-            (err) => console.log(err)
+            (err) => this.setState({
+                error: err.message
+            })
             
         );
     
@@ -45,14 +48,31 @@ class App extends React.Component {
             console.log(this.state)
         }
 
-    
-        return (
-            <div>
-                <h1>Hello</h1>
-                <SeasonDisplay season={this.state.season} />
-            </div>
+        if(this.state.error && !this.state.season){
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <p>{this.state.error}</p>
 
-        )
+                </div>
+
+            )
+        }
+
+        if (!this.state.error && this.state.season) {
+            return (
+                <div>
+                    <h1>Hello</h1>
+                    <p>{this.state.season}</p>
+
+                    <SeasonDisplay season={this.state.season} />
+
+                </div>
+
+            )
+        }
+         return <div>Loading!</div>
+        
     }
     
 }
